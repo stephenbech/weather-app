@@ -1,0 +1,295 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Weather App</title>
+   <link rel="stylesheet" href="style.css">
+</head>
+<body>
+   
+   <div class="card">
+      <div class="search">
+         <input type="text" class="search-bar" placeholder="Search">
+         <button class="search-btn"><img src="images/search.png" alt="Search Icon"></button>
+      </div>
+      <div class="error">
+         <p>Invalid city name</p>
+      </div>
+      <div class="weather">
+         <img src="images/rain.png" alt="rain" class="weather-icon">
+         <h1 class="temp">22°C</h1>
+         <h2 class="city">New York</h2>
+         <div class="details">
+            <div class="col">
+               <img src="images/humidity.png" alt="humidity">
+               <div>
+                  <p class="humidity">50%</p>
+                  <p>Humidity</p>
+               </div>
+            </div>
+            <div class="col">
+               <img src="images/wind.png" alt="wind">
+               <div>
+                  <p class="wind">30 km/h</p>
+                  <p>Wind Speed</p>
+               </div>
+            </div>
+      </div>
+   </div>
+
+   <script>
+
+      const apiKey = "09a862333b95f5a51ecd41e4c3c1b26a";
+      const apiUrl = "https://api.openweathermap.org/data/2.5/weather?units=metric&q=";
+
+      const searchBox = document.querySelector(".search input");
+      const searchBtn = document.querySelector(".search button");
+      const weatherIcon = document.querySelector(".weather-icon");
+      
+      async function checkWeather(city) {
+         const response = await fetch(apiUrl + city + `&appid=${apiKey}`); 
+
+         if(response.status == 404) {
+            document.querySelector(".error").style.display = "block";
+            document.querySelector(".weather").style.display = "none";
+         } else {
+            var data = await response.json();
+
+            console.log(data);
+
+            document.querySelector(".city").innerHTML = data.name;
+            document.querySelector(".temp").innerHTML = Math.round(data.main.temp) + "°C";
+            document.querySelector(".humidity").innerHTML = data.main.humidity + "%";
+            document.querySelector(".wind").innerHTML = data.wind.speed + " km/h";
+
+            if(data.weather[0].main == "Clouds") {
+               weatherIcon.src = "images/clouds.png";
+            } else if(data.weather[0].main == "Clear") {
+               weatherIcon.src = "images/clear.png";
+            } else if(data.weather[0].main == "Rain") {
+               weatherIcon.src = "images/rain.png";
+            } else if(data.weather[0].main == "Drizzle") {
+               weatherIcon.src = "images/drizzle.png";
+            } else if(data.weather[0].main == "Mist") {
+               weatherIcon.src = "images/mist.png";
+            }
+
+            document.querySelector(".weather").style.display = "block";
+            document.querySelector(".error").style.display = "none";
+
+         }
+         
+      }
+
+      searchBtn.addEventListener("click", () => {
+         checkWeather(searchBox.value);
+      });
+
+      
+   </script>
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Weather App</title>
+   <link rel="stylesheet" href="style.css">
+</head>
+<body>
+   
+   <div class="card">
+      <div class="search">
+         <input type="text" class="search-bar" placeholder="Enter City">
+         <button class="search-btn">Search</button>
+      </div>
+      <div class="error" style="display: none;">
+         <p>Invalid city name</p>
+      </div>
+      <div class="weather" style="display: none;">
+         <img src="images/rain.png" alt="rain" class="weather-icon">
+         <h1 class="temp">22°C</h1>
+         <h2 class="city">New York</h2>
+         <div class="details">
+            <div class="col">
+               <img src="images/humidity.png" alt="humidity">
+               <div>
+                  <p class="humidity">50%</p>
+                  <p>Humidity</p>
+               </div>
+            </div>
+            <div class="col">
+               <img src="images/wind.png" alt="wind">
+               <div>
+                  <p class="wind">30 km/h</p>
+                  <p>Wind Speed</p>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+
+   <div class="default-city">
+      <input type="text" class="default-city-input" placeholder="Set Default City">
+      <button class="set-default-city-btn">Set Default City</button>
+      <button class="back-to-default-btn" style="display: none;">Back to Default</button>
+   </div>
+
+   <script>
+      const apiKey = "09a862333b95f5a51ecd41e4c3c1b26a";
+      const apiUrl = "https://api.openweathermap.org/data/2.5/weather?units=metric&q=";
+      const searchBox = document.querySelector(".search-bar");
+      const searchBtn = document.querySelector(".search-btn");
+      const weatherIcon = document.querySelector(".weather-icon");
+      const errorDiv = document.querySelector(".error");
+      const weatherDiv = document.querySelector(".weather");
+      const defaultCityInput = document.querySelector(".default-city-input");
+      const setDefaultCityBtn = document.querySelector(".set-default-city-btn");
+      const backToDefaultBtn = document.querySelector(".back-to-default-btn");
+
+      // Function to get weather data
+      async function getWeather(city) {
+         const response = await fetch(apiUrl + city + `&appid=${apiKey}`);
+         const data = await response.json();
+         return data;
+      }
+
+      // Function to update weather display
+function updateWeather(data) {
+    document.querySelector(".city").innerHTML = data.name;
+    document.querySelector(".temp").innerHTML = Math.round(data.main.temp) + "°C";
+    document.querySelector(".humidity").innerHTML = data.main.humidity + "%";
+    document.querySelector(".wind").innerHTML = data.wind.speed + " km/h";
+
+    if (data.weather[0].main == "Clouds") {
+        weatherIcon.src = "images/clouds.png";
+    } else if (data.weather[0].main == "Clear") {
+        weatherIcon.src = "images/clear.png";
+    } else if (data.weather[0].main == "Rain") {
+        weatherIcon.src = "images/rain.png";
+    } else if (data.weather[0].main == "Drizzle") {
+        weatherIcon.src = "images/drizzle.png";
+    } else if (data.weather[0].main == "Mist") {
+        weatherIcon.src = "images/mist.png";
+    }
+
+    // Show weather, hide error
+    weatherDiv.style.display = "block";
+    errorDiv.style.display = "none";
+
+    // Hide back to default button
+    backToDefaultBtn.style.display = "none";
+}
+
+
+navigator.permissions.query({ name: 'geolocation' }).then(permissionStatus => {
+  if (permissionStatus.state === 'changed') { // Check for permission changes
+    askForLocation(); // If permission changes, re-ask for location
+  }
+});
+
+      // Function to ask for location permission
+function askForLocation() {
+   console.log("Asking for location permission...");
+   if ("geolocation" in navigator) {
+    navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
+  } else {
+      // Show error, hide weather
+      errorDiv.style.display = "block";
+      errorDiv.textContent = "Geolocation is not supported by your browser. Please enter your default city manually.";
+   }
+}
+// Function to handle successful retrieval of geolocation
+async function successCallback(position) {
+    const latitude = position.coords.latitude;
+    const longitude = position.coords.longitude;
+    
+    // Now you can use latitude and longitude to fetch weather data for the user's location
+    // Example:
+    const apiUrl = `https://api.openweathermap.org/data/2.5/weather?units=metric&lat=${latitude}&lon=${longitude}&appid=${apiKey}`;
+    const response = await fetch(apiUrl);
+    const data = await response.json();
+    updateWeather(data);
+    localStorage.setItem("defaultCity", data.name); // Store city name from retrieved data in local storage
+}
+
+// Function to handle errors during geolocation retrieval
+function errorCallback(error) {
+    // Display an error message
+    errorDiv.style.display = "block";
+    errorDiv.textContent = "Error occurred while retrieving your location. Please enter your default city manually.";
+}
+
+
+    // Function to handle search button click
+searchBtn.addEventListener("click", async () => {
+    const city = searchBox.value.trim();
+    if (city !== "") {
+        const data = await getWeather(city);
+        if (data.cod === "404") {
+            // Show error, hide weather
+            errorDiv.style.display = "block";
+            weatherDiv.style.display = "none";
+        } else {
+            updateWeather(data);
+            // Show back to default button
+            backToDefaultBtn.style.display = "block"; // Show button when a city is searched
+            searchBox.value = "";
+        }
+        
+    } else {
+        // Show error, hide weather
+        errorDiv.style.display = "block";
+        weatherDiv.style.display = "none";
+        errorDiv.textContent = "Please enter a city name.";
+    }
+});
+
+
+
+     // Function to handle set default city button click
+setDefaultCityBtn.addEventListener("click", async () => {
+  const defaultCity = defaultCityInput.value.trim();
+  if (defaultCity !== "") {
+    const data = await getWeather(defaultCity);
+    if (data.cod === "404") {  // Check for API error (city not found)
+      alert("Invalid city name. Please enter a valid city.");
+    } else {
+      updateWeather(data);
+      localStorage.setItem("defaultCity", defaultCity);
+      defaultCityInput.value = "";
+      alert("Default city set successfully.");
+    }
+  } else {
+    alert("Please enter a default city.");
+  }
+});
+
+
+      // Function to handle back to default button click
+backToDefaultBtn.addEventListener("click", async () => {
+    const defaultCity = localStorage.getItem("defaultCity");
+    if (defaultCity) {
+        const data = await getWeather(defaultCity);
+        updateWeather(data);
+        backToDefaultBtn.style.display = "none"; // Hide back to default button after updating weather
+    }
+});
+
+// Function to load default city weather on page load
+window.addEventListener("load", async () => {
+  const defaultCity = localStorage.getItem("defaultCity");
+  if (!defaultCity) { // Check if there's no default city stored
+    askForLocation(); // If not, ask for geolocation
+  } else {
+    const data = await getWeather(defaultCity);
+    updateWeather(data);
+  }
+});
+
+   </script>
+</body>
+</html>
